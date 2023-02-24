@@ -3,7 +3,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const UserModel = require('./Models/User.Model')
 const app = express()
-const port = 3200
+const port = 3300
 const connection = require('./config/db')
 require('dotenv').config()
 
@@ -18,6 +18,7 @@ app.get('/emailverify', (req, res) => {
     let token = req.query.token
     // console.log(token);
     jwt.verify(token, process.env.EMAILVARIFICATION, async (err, decoded) => {
+        console.log(decoded, 'l');
         if (err) {
             console.log(err);
             res.sendFile(__dirname + '/page/expire.html');
@@ -29,7 +30,7 @@ app.get('/emailverify', (req, res) => {
             if (userExist.length == 0) {
                 console.log(decoded);
                 try {
-                    let newUser = new UserModel({ email, name, password: hash })
+                    let newUser = new UserModel({ email, name, password: hash, role: 'user', stage: 1 })
                     await newUser.save()
                     console.log('user saved');
                 } catch (err) {
